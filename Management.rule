@@ -1,0 +1,110 @@
+@RULE Management
+#
+#  The Management Game Ruleset
+#
+#  Peter Turney, March 9, 2021
+#
+#  This rule is based on the Immigration Game rule. The
+#  Immigration Game is a game for two players inspired by 
+#  Conway's Game of Life. The Immigration Game extends 
+#  Conway's game from two states (0 = dead, 1 = alive) to 
+#  three states (0 = dead, 1 = player 1, 2 = player 2).
+#  The Management Game extends the Immigration Game from
+#  three states to five states (0 = dead, 1 = player 1
+#  alone, 2 = player 2 alone, 3 = player 1 with help,
+#  4 = player 2 with help).
+#
+#  The Management Game follows the B3/S23 rule (born with
+#  three neighbours, survive with two or three neighbours),
+#  but adds additional rules for determining colours:
+#
+#    0 = dead               = W = white
+#    1 = player 1 alone     = R = red
+#    2 = player 2 alone     = B = blue
+#    3 = player 1 with help = O = orange (red + yellow)
+#    4 = player 2 with help = G = green (blue + yellow)
+#
+#  The idea is that the game starts with red and blue
+#  (1 and 2) and the red and blue acquire some yellow
+#  (from 1 to 3 and from 2 to 4) as they come in contact 
+#  with each other.
+#
+#  1 new red cell    = this cell was created by three red cells alone
+#  1 new orange cell = this cell was created with help by blue or green
+#
+#  1 new blue cell  = this cell was created by three blue cells alone
+#  1 new green cell = this cell was created with help by red or orange
+#
+#
+@TABLE
+#
+n_states:5
+neighborhood:Moore
+symmetries:permute
+#
+#  Variables
+#
+var a={2,3,4}     # a = non-red -- blue, orange, green
+var b={1,3,4}     # b = non-blue -- red, orange, green
+var c={2,4}       # c = blue or green
+var d={2,4}       # d = blue or green
+var e={1,3}       # e = red or orange
+var f={1,3}       # f = red or orange
+#
+var g={1,2,3,4}   # g = not dead
+var h={1,2,3,4}   # h = not dead
+var i={1,2,3,4}   # i = not dead
+var j={1,2,3,4}   # j = not dead
+var k={1,2,3,4}   # k = not dead
+#
+var w={0,1,2,3,4} # w = anything dead or alive
+var x={0,1,2,3,4} # x = anything dead or alive
+var y={0,1,2,3,4} # y = anything dead or alive
+var z={0,1,2,3,4} # z = anything dead or alive
+#
+#  C,N,NE,E,SE,S,SW,W,NW,C' for the Moore neighborhood
+#
+#  Birth of a new life with 3 live neighbours
+#
+0,1,1,1,0,0,0,0,0,1  #  3 red -> 1 red birth
+0,2,2,2,0,0,0,0,0,2  #  3 blue -> 1 blue birth
+0,e,f,a,0,0,0,0,0,3  #  2 red/orange + 1 non-red -> orange birth
+0,c,d,b,0,0,0,0,0,4  #  2 blue/green + 1 non-blue -> green birth
+#
+#  Dies of overcrowding with 4 or more live neighbours
+#
+g,h,i,j,k,w,x,y,z,0
+#
+#  Dies of loneliness with 0 or 1 live neighbours
+#
+g,z,0,0,0,0,0,0,0,0
+#
+#  Stays the same with 2 live neighbours
+#
+1,g,h,0,0,0,0,0,0,1
+2,g,h,0,0,0,0,0,0,2
+3,g,h,0,0,0,0,0,0,3
+4,g,h,0,0,0,0,0,0,4
+#
+#  Stays the same with 3 live neighbours
+#
+1,g,h,i,0,0,0,0,0,1
+2,g,h,i,0,0,0,0,0,2
+3,g,h,i,0,0,0,0,0,3
+4,g,h,i,0,0,0,0,0,4
+#
+#
+@COLORS
+#
+#  choose the colors for the different states
+#
+#  format: <state red green blue comment>
+#
+#    R    G    B
+0  255  255  255   white
+1  255    0    0   red
+2    0    0  255   blue
+3  255  165    0   orange (red + yellow)
+4    0  255  165   green (blue + yellow)
+#
+#
